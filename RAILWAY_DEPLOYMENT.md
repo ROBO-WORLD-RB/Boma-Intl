@@ -1,8 +1,14 @@
 # BOMA 2025 - Railway Deployment Guide
 
+⚠️ **NOTE**: We've switched to **Supabase** for the database. See `SUPABASE_DEPLOYMENT.md` for the updated deployment guide.
+
+This guide is kept for reference if you want to use Railway for the backend service.
+
+---
+
 ## 🚀 Your Railway Setup
 
-**Database Connection String:**
+**Database Connection String (Legacy - Use Supabase instead):**
 ```
 postgresql://postgres:dCkegaZCuHGKRlDWQoNdiTyQhEGYtUTo@yamanote.proxy.rlwy.net:28658/railway?schema=public&sslmode=require
 ```

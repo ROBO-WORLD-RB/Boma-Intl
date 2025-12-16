@@ -265,38 +265,46 @@ NODE_ENV=production
 
 ### Step 1: Choose Your Hosting
 
-**Option A: Vercel (Frontend) + Railway (Backend) - RECOMMENDED**
+**Option A: Vercel (Frontend) + Vercel/Railway (Backend) + Supabase (Database) - RECOMMENDED**
 
-**Backend on Railway (Step-by-step):**
+**Database on Supabase (Step-by-step):**
 
-1. Go to https://railway.app and sign up
-2. Create new project
-3. Add PostgreSQL service:
-   - Click "Add Service" → "Database" → "PostgreSQL"
-   - Railway creates a PostgreSQL container with SSL
-4. Connect your GitHub repo:
-   - Click "Add Service" → "GitHub Repo"
-   - Select your streetwear-api repo
-5. Configure environment variables in Railway:
-   - Go to Variables tab
-   - Add all variables from your `.env`:
-     ```
-     DATABASE_URL=postgresql://postgres:password@rail.proxy.rlwy.net:5432/railway?schema=public&sslmode=require
-     JWT_SECRET=your-secure-secret
-     PAYSTACK_SECRET_KEY=sk_live_xxxxx
-     PAYSTACK_PUBLIC_KEY=pk_live_xxxxx
-     SMTP_HOST=smtp.gmail.com
-     SMTP_PORT=587
-     SMTP_SECURE=false
-     SMTP_USER=your-email@gmail.com
-     SMTP_PASS=your-app-password
-     EMAIL_FROM=BOMA 2025 <noreply@boma2025.com>
-     NODE_ENV=production
-     PORT=3001
-     APP_URL=https://yourdomain.com
-     ```
-6. Deploy - Railway automatically builds and deploys
-7. Get your backend URL from Railway dashboard
+1. Go to https://supabase.com and sign up
+2. Create new project:
+   - Project name: `boma-2025`
+   - Create strong database password
+   - Choose region closest to users
+3. Get connection string:
+   - Settings → Database → Connection string (URI)
+   - Copy: `postgresql://postgres:[PASSWORD]@[PROJECT-ID].supabase.co:5432/postgres?schema=public&sslmode=require`
+4. Run migrations locally:
+   ```bash
+   DATABASE_URL="your-supabase-url" npx prisma db push
+   npm run db:seed
+   ```
+
+**Backend on Vercel or Railway:**
+
+1. Go to https://vercel.app or https://railway.app
+2. Create new project from GitHub
+3. Configure environment variables:
+   ```
+   DATABASE_URL=postgresql://postgres:[PASSWORD]@[PROJECT-ID].supabase.co:5432/postgres?schema=public&sslmode=require
+   JWT_SECRET=your-secure-secret
+   PAYSTACK_SECRET_KEY=sk_live_xxxxx
+   PAYSTACK_PUBLIC_KEY=pk_live_xxxxx
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=your-app-password
+   EMAIL_FROM=BOMA 2025 <noreply@boma2025.com>
+   NODE_ENV=production
+   PORT=3001
+   APP_URL=https://yourdomain.com
+   ```
+4. Deploy - automatically builds and deploys
+5. Get your backend URL from dashboard
 
 **Frontend on Vercel:**
 1. Push code to GitHub
@@ -304,32 +312,32 @@ NODE_ENV=production
 3. Import your project (`my-streetwear-brand`)
 4. Add environment variables:
    ```
-   NEXT_PUBLIC_API_URL=https://your-railway-backend-url/api/v1
+   NEXT_PUBLIC_API_URL=https://your-backend-url/api/v1
    ```
 5. Deploy
 
 **Connect Frontend to Backend:**
-- In Vercel, set `NEXT_PUBLIC_API_URL` to your Railway backend URL
-- Example: `https://streetwear-api-production.up.railway.app/api/v1`
+- In Vercel, set `NEXT_PUBLIC_API_URL` to your backend URL
+- Example: `https://boma-api.vercel.app/api/v1`
 
 ---
 
 ### Step 2: Database for Production
 
-**Using Railway PostgreSQL (Recommended):**
+**Using Supabase PostgreSQL (Recommended):**
 
-1. Go to https://railway.app
+1. Go to https://supabase.com
 2. Create new project
-3. Add PostgreSQL service (uses `ghcr.io/railwayapp-templates/postgres-ssl:17`)
-4. Railway automatically provides:
-   - Connection string
-   - Database name
-   - Username & password
-5. Copy the connection string to your backend environment variables
+3. Supabase automatically provides:
+   - Connection string with SSL
+   - Database name: `postgres`
+   - Username: `postgres`
+   - Password: (you set this)
+4. Copy the connection string to your backend environment variables
 
-**Example Railway Connection String:**
+**Example Supabase Connection String:**
 ```
-postgresql://postgres:password@rail.proxy.rlwy.net:5432/railway?schema=public&sslmode=require
+postgresql://postgres:[PASSWORD]@[PROJECT-ID].supabase.co:5432/postgres?schema=public&sslmode=require
 ```
 
 **Using AWS RDS:**
@@ -340,6 +348,8 @@ postgresql://postgres:password@rail.proxy.rlwy.net:5432/railway?schema=public&ss
    ```
    postgresql://admin:password@your-db.xxxxx.us-east-1.rds.amazonaws.com:5432/streetwear_db
    ```
+
+**See SUPABASE_DEPLOYMENT.md for complete step-by-step guide.**
 
 ---
 
