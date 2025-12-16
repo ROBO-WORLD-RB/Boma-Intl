@@ -3,6 +3,7 @@ import { Oswald, Inter } from "next/font/google";
 import SmoothScroll from "../src/components/SmoothScroll";
 import Navbar from "../src/components/Navbar";
 import Footer from "../src/components/Footer";
+import WhatsAppButton from "../src/components/WhatsAppButton";
 import "./globals.css";
 
 const oswald = Oswald({
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Navbar />
         <SmoothScroll>{children}</SmoothScroll>
         <Footer />
+        <WhatsAppButton />
       </body>
     </html>
   );
