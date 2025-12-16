@@ -95,7 +95,7 @@ export class AnalyticsService {
     const productSales = new Map<string, { title: string; totalSold: number; revenue: Decimal }>();
     
     for (const order of orders) {
-      for (const item of order.items) {
+      for (const item of order.items as { variant: { product: { id: string; title: string }; }; quantity: number; priceAtPurchase: Decimal }[]) {
         const productId = item.variant.product.id;
         const existing = productSales.get(productId) || {
           title: item.variant.product.title,
@@ -169,12 +169,12 @@ export class AnalyticsService {
     });
 
     const thisMonthRevenue = thisMonthOrders.reduce(
-      (sum, order) => sum.add(order.totalAmount),
+      (sum: Decimal, order: { totalAmount: Decimal }) => sum.add(order.totalAmount),
       new Decimal(0)
     );
 
     const lastMonthRevenue = lastMonthOrders.reduce(
-      (sum, order) => sum.add(order.totalAmount),
+      (sum: Decimal, order: { totalAmount: Decimal }) => sum.add(order.totalAmount),
       new Decimal(0)
     );
 

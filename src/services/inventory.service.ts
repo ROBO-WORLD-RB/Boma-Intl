@@ -114,10 +114,10 @@ export class InventoryService {
       },
     });
 
-    const summary = products.map((product) => {
-      const totalStock = product.variants.reduce((sum, v) => sum + v.stockQuantity, 0);
+    const summary = products.map((product: { id: string; title: string; slug: string; lowStockThreshold: number; variants: { stockQuantity: number }[] }) => {
+      const totalStock = product.variants.reduce((sum: number, v: { stockQuantity: number }) => sum + v.stockQuantity, 0);
       const variantCount = product.variants.length;
-      const outOfStockVariants = product.variants.filter((v) => v.stockQuantity === 0).length;
+      const outOfStockVariants = product.variants.filter((v: { stockQuantity: number }) => v.stockQuantity === 0).length;
 
       return {
         productId: product.id,
@@ -130,7 +130,7 @@ export class InventoryService {
       };
     });
 
-    return summary.sort((a, b) => a.totalStock - b.totalStock);
+    return summary.sort((a: { totalStock: number }, b: { totalStock: number }) => a.totalStock - b.totalStock);
   }
 }
 

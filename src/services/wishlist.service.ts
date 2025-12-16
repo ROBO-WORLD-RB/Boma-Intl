@@ -29,7 +29,7 @@ export class WishlistService {
     ]);
 
     return {
-      items: items.map((item) => ({
+      items: items.map((item: { id: string; createdAt: Date; product: unknown }) => ({
         id: item.id,
         addedAt: item.createdAt,
         product: item.product,

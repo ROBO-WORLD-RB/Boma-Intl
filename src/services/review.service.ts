@@ -44,7 +44,7 @@ export class ReviewService {
       }),
     ]);
 
-    const transformedReviews = reviews.map((review) => ({
+    const transformedReviews = reviews.map((review: { id: string; rating: number; comment: string | null; verified: boolean; createdAt: Date; user: { email: string } }) => ({
       id: review.id,
       rating: review.rating,
       comment: review.comment,

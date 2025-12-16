@@ -76,8 +76,10 @@ export class OrderService {
 
     const errors: InventoryError[] = [];
 
+    type VariantWithProduct = { id: string; stockQuantity: number; size: string; color: string; product: { title: string; isActive: boolean } };
+    
     for (const item of items) {
-      const variant = variants.find((v) => v.id === item.variantId);
+      const variant = variants.find((v: VariantWithProduct) => v.id === item.variantId) as VariantWithProduct | undefined;
       
       if (!variant) {
         errors.push({
@@ -144,8 +146,10 @@ export class OrderService {
       calculateDeliveryFee(shippingAddress.region || shippingAddress.state || '')
     );
 
+    type TxVariant = { id: string; stockQuantity: number; size: string; color: string; priceOverride: Decimal | null; product: { basePrice: Decimal; isActive: boolean; title: string } };
+    
     // Execute everything in a transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: typeof prisma) => {
       // 1. Fetch all variants with their products (for pricing)
       const variantIds = items.map((item) => item.variantId);
       const variants = await tx.productVariant.findMany({
@@ -168,7 +172,7 @@ export class OrderService {
       const inventoryErrors: InventoryError[] = [];
 
       for (const item of items) {
-        const variant = variants.find((v) => v.id === item.variantId);
+        const variant = variants.find((v: TxVariant) => v.id === item.variantId) as TxVariant | undefined;
         
         if (!variant) {
           throw ApiError.badRequest(`Variant ${item.variantId} not found`);
@@ -336,11 +340,13 @@ export class OrderService {
       country: string;
     };
 
+    type OrderItemWithVariant = { variant: { product: { title: string }; size: string; color: string }; quantity: number; priceAtPurchase: Decimal };
+    
     await emailService.sendOrderConfirmation({
       orderId: order.id,
       customerName: shippingAddress.fullName || order.customerName || 'Customer',
       customerEmail: order.customerEmail || order.user?.email || '',
-      items: order.items.map((item) => ({
+      items: order.items.map((item: OrderItemWithVariant) => ({
         title: item.variant.product.title,
         size: item.variant.size,
         color: item.variant.color,
@@ -366,7 +372,7 @@ export class OrderService {
     if (!order) return;
 
     await prisma.$transaction(
-      order.items.map((item) =>
+      order.items.map((item: { variantId: string; quantity: number }) =>
         prisma.productVariant.update({
           where: { id: item.variantId },
           data: { stockQuantity: { increment: item.quantity } },
@@ -472,11 +478,12 @@ export class OrderService {
 
     // Send shipping notification when status changes to SHIPPED
     if (status === 'SHIPPED') {
+      type ShippingItem = { variant: { product: { title: string }; size: string; color: string }; quantity: number; priceAtPurchase: Decimal };
       await emailService.sendShippingNotification({
         orderId: order.id,
         customerName: shippingAddress.fullName || order.customerName || 'Customer',
         customerEmail: order.customerEmail || order.user?.email || '',
-        items: order.items.map((item) => ({
+        items: order.items.map((item: ShippingItem) => ({
           title: item.variant.product.title,
           size: item.variant.size,
           color: item.variant.color,

@@ -1,6 +1,5 @@
 import prisma from '../utils/prisma';
 import { ApiError } from '../utils/ApiError';
-import { Prisma } from '@prisma/client';
 
 interface CreateProductInput {
   title: string;
@@ -36,12 +35,12 @@ export class ProductService {
     const { page = 1, limit = 12, search, minPrice, maxPrice, isActive = true } = filters;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.ProductWhereInput = {
+    const where = {
       isActive,
       ...(search && {
         OR: [
-          { title: { contains: search, mode: 'insensitive' } },
-          { description: { contains: search, mode: 'insensitive' } },
+          { title: { contains: search, mode: 'insensitive' as const } },
+          { description: { contains: search, mode: 'insensitive' as const } },
         ],
       }),
       ...(minPrice !== undefined && { basePrice: { gte: minPrice } }),
@@ -189,7 +188,7 @@ export class ProductService {
       throw ApiError.notFound('Product not found');
     }
 
-    const hasOrders = existingProduct.variants.some(v => v.orderItems.length > 0);
+    const hasOrders = existingProduct.variants.some((v: { orderItems: unknown[] }) => v.orderItems.length > 0);
     if (hasOrders) {
       await prisma.product.update({
         where: { id: productId },
