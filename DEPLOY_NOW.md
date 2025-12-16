@@ -23,11 +23,11 @@ https://vercel.com/dashboard
 
 **Framework Preset:** Other
 
-**Root Directory:** `.` (leave as is)
+**Root Directory:** `.` (root - NOT my-streetwear-brand)
 
-**Build Command:** `npm run build`
+**Build Command:** Leave empty (vercel.json handles it)
 
-**Output Directory:** `dist`
+**Output Directory:** Leave empty (vercel.json handles it)
 
 ---
 
