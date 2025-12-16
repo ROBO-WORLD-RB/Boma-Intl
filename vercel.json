@@ -1,19 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "src/server.ts": {
-      "runtime": "@vercel/node@3.0.0"
-    }
-  },
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/server.ts"
-    }
-  ]
+  "buildCommand": "cd my-streetwear-brand && npm run build",
+  "outputDirectory": "my-streetwear-brand/.next"
 }
