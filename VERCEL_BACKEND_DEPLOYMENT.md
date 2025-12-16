@@ -39,6 +39,7 @@ vercel --prod
    - **Root Directory**: `.` (root)
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
+   - **Note**: Vercel will use `vercel.backend.json` for backend configuration
 6. Click "Environment Variables" and add:
 
 ```

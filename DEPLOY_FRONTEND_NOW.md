@@ -23,11 +23,11 @@ https://vercel.com/dashboard
 
 **Framework Preset:** Next.js
 
-**Root Directory:** `my-streetwear-brand`
+**Root Directory:** `.` (root - leave as default)
 
-**Build Command:** `npm run build`
+**Build Command:** Leave empty (Vercel will auto-detect)
 
-**Output Directory:** `.next`
+**Output Directory:** Leave empty (Vercel will auto-detect)
 
 ---
 
@@ -36,7 +36,7 @@ https://vercel.com/dashboard
 Click **"Environment Variables"** and add:
 
 ```
-
+NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ```
 
 (We'll update this after backend is deployed)
