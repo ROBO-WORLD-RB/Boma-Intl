@@ -1,5 +1,0 @@
-{
-  "version": 2,
-  "buildCommand": "cd my-streetwear-brand && npm run build",
-  "outputDirectory": "my-streetwear-brand/.next"
-}
