@@ -23,11 +23,13 @@ https://vercel.com/dashboard
 
 **Framework Preset:** Next.js
 
-**Root Directory:** `.` (root - leave as default)
+**Root Directory:** `my-streetwear-brand`
 
-**Build Command:** Leave empty (Vercel will auto-detect)
+**Build Command:** `npm run build`
 
-**Output Directory:** Leave empty (Vercel will auto-detect)
+**Output Directory:** `.next`
+
+(Vercel will auto-detect these settings)
 
 ---
 
