@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     },
 };
 
-export default function MaintenanceLayout({
+export default function MaintenanceGroupLayout({
     children,
 }: {
     children: React.ReactNode;
