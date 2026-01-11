@@ -1,6 +1,6 @@
-import Hero from "../src/components/Hero";
-import Marquee from "../src/components/Marquee";
-import Gallery from "../src/components/Gallery";
+import Hero from "../../src/components/Hero";
+import Marquee from "../../src/components/Marquee";
+import Gallery from "../../src/components/Gallery";
 
 export default function Home() {
   return (
