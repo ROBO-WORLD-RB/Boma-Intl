@@ -8,8 +8,7 @@ const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
 if (missingEnvVars.length > 0 && process.env.NODE_ENV !== 'test') {
   console.error(`❌ Missing required environment variables: ${missingEnvVars.join(', ')}`);
-  console.error('Please check your .env file');
-  process.exit(1);
+  console.error('Please check your .env file or Vercel environment variables');
 }
 
 // Warn about insecure defaults in production
