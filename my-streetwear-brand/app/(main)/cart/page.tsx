@@ -9,7 +9,7 @@ import CartPage from '@/components/cart/CartPage';
  */
 
 export const metadata: Metadata = {
-  title: 'Shopping Cart | BOMA 2025',
+  title: 'Shopping Cart | BOMA 2026',
   description: 'Review your shopping cart and proceed to checkout',
 };
 

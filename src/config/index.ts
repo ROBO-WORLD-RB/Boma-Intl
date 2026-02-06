@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 // Validate required environment variables
 const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
@@ -40,10 +41,10 @@ export const config = {
     secure: process.env.SMTP_SECURE === 'true',
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
-    from: process.env.EMAIL_FROM || 'BOMA 2025 <noreply@boma2025.com>',
+    from: process.env.EMAIL_FROM || 'BOMA 2026 <noreply@boma2026.com>',
   },
   app: {
-    name: 'BOMA 2025',
+    name: 'BOMA 2026',
     url: process.env.APP_URL || 'http://localhost:3000',
   },
 };

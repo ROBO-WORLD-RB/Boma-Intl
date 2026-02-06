@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "BOMA 2025 | Premium Streetwear from Accra | African Fashion",
-  description: "Discover BOMA 2025 - Premium African streetwear collection. Define the culture with authentic fashion from Accra to the world. Shop exclusive tees, hoodies, jackets & more.",
+  title: "BOMA 2026 | Premium Streetwear from Accra | African Fashion",
+  description: "Discover BOMA 2026 - Premium African streetwear collection. Define the culture with authentic fashion from Accra to the world. Shop exclusive tees, hoodies, jackets & more.",
 };
 
 export default function RootLayout({

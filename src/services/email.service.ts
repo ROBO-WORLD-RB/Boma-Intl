@@ -116,7 +116,7 @@ class EmailService {
         </div>
         
         <div style="text-align: center; margin-top: 30px; color: #666; font-size: 14px;">
-          <p>Questions? Reply to this email or contact us at support@boma2025.com</p>
+          <p>Questions? Reply to this email or contact us at support@boma2026.com</p>
           <p style="margin-top: 20px;">
             <a href="${config.app.url}" style="color: #000;">Visit our store</a>
           </p>
@@ -141,11 +141,10 @@ class EmailService {
         <div style="background: #fff; padding: 20px; border-radius: 4px; margin: 20px 0;">
           <p style="margin: 0; color: #666;">Tracking Number</p>
           <p style="margin: 5px 0 0; font-size: 18px; font-weight: bold;">${data.trackingNumber}</p>
-          ${
-            data.trackingUrl
-              ? `<a href="${data.trackingUrl}" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #000; color: #fff; text-decoration: none; border-radius: 4px;">Track Package</a>`
-              : ''
-          }
+          ${data.trackingUrl
+        ? `<a href="${data.trackingUrl}" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #000; color: #fff; text-decoration: none; border-radius: 4px;">Track Package</a>`
+        : ''
+      }
         </div>
       `
       : '';

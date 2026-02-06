@@ -10,10 +10,10 @@ import QuickViewModal from "./QuickViewModal";
 
 // Animation variants for viewport-triggered animations
 const itemVariants: Variants = {
-  hidden: { 
-    opacity: 0, 
-    y: 50, 
-    scale: 0.95 
+  hidden: {
+    opacity: 0,
+    y: 50,
+    scale: 0.95
   },
   visible: {
     opacity: 1,
@@ -31,7 +31,7 @@ const galleryToProduct = (item: GalleryItem): Product => ({
   id: item.id,
   title: item.title,
   slug: item.title.toLowerCase().replace(/\s+/g, "-"),
-  description: `Premium streetwear piece from the BOMA 2025 collection. ${item.alt}`,
+  description: `Premium streetwear piece from the BOMA 2026 collection. ${item.alt}`,
   basePrice: 45000 + Math.floor(Math.random() * 30000),
   salePrice: Math.random() > 0.7 ? 35000 + Math.floor(Math.random() * 20000) : undefined,
   isActive: true,
@@ -101,10 +101,10 @@ export default function Gallery() {
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               />
-              
+
               {/* Overlay with title text on hover/tap */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 active:bg-black/60 transition-all duration-300 flex items-end justify-start p-4 sm:p-6">
-                <span 
+                <span
                   className="text-white uppercase text-xs sm:text-sm md:text-base font-bold tracking-widest opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0"
                   style={{ fontFamily: "var(--font-heading), sans-serif" }}
                 >

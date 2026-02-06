@@ -136,7 +136,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section 
+    <section
       className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -178,11 +178,10 @@ export default function Hero() {
             aria-label={`Go to slide ${index + 1}`}
           >
             <span
-              className={`block h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide
+              className={`block h-2 rounded-full transition-all duration-300 ${index === currentSlide
                   ? "bg-white w-8"
                   : "bg-white/40 hover:bg-white/60 w-2"
-              }`}
+                }`}
             />
           </button>
         ))}
@@ -206,7 +205,7 @@ export default function Hero() {
           >
             {heroTexts[currentSlide]}
             <br />
-            <span className="text-white/80">BOMA 2025</span>
+            <span className="text-white/80">BOMA 2026</span>
           </motion.h1>
         </AnimatePresence>
 

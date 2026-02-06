@@ -1,6 +1,6 @@
 import { Product } from '@/types';
 
-// Product names for the BOMA 2025 collection
+// Product names for the BOMA 2026 collection
 const productNames = [
   'Culture Tee',
   'Streets Hoodie',
@@ -25,12 +25,12 @@ export const mockProducts: Product[] = Array.from({ length: 24 }, (_, i) => {
   const nameIndex = i % productNames.length;
   const basePrice = priceRanges[i % priceRanges.length];
   const hasSale = Math.random() > 0.7;
-  
+
   return {
     id: `product-${i + 1}`,
     title: `${productNames[nameIndex]} ${Math.floor(i / productNames.length) + 1}`,
     slug: `${productNames[nameIndex].toLowerCase().replace(/\s+/g, '-')}-${i + 1}`,
-    description: `Premium streetwear piece from the BOMA 2025 collection. Crafted with attention to detail and designed for those who define the culture.`,
+    description: `Premium streetwear piece from the BOMA 2026 collection. Crafted with attention to detail and designed for those who define the culture.`,
     basePrice,
     salePrice: hasSale ? Math.floor(basePrice * 0.85) : undefined,
     isActive: true,
@@ -77,18 +77,18 @@ export function getMockProducts(options: {
   sortBy?: string;
 }) {
   const { page = 1, limit = 12, search, minPrice, maxPrice, sizes, colors, sortBy } = options;
-  
+
   let filtered = [...mockProducts];
-  
+
   // Apply search filter
   if (search) {
     const searchLower = search.toLowerCase();
-    filtered = filtered.filter(p => 
+    filtered = filtered.filter(p =>
       p.title.toLowerCase().includes(searchLower) ||
       p.description.toLowerCase().includes(searchLower)
     );
   }
-  
+
   // Apply price filter
   if (minPrice !== undefined) {
     filtered = filtered.filter(p => (p.salePrice ?? p.basePrice) >= minPrice);
@@ -96,21 +96,21 @@ export function getMockProducts(options: {
   if (maxPrice !== undefined) {
     filtered = filtered.filter(p => (p.salePrice ?? p.basePrice) <= maxPrice);
   }
-  
+
   // Apply size filter
   if (sizes && sizes.length > 0) {
-    filtered = filtered.filter(p => 
+    filtered = filtered.filter(p =>
       p.variants.some(v => sizes.includes(v.size) && v.stockQuantity > 0)
     );
   }
-  
+
   // Apply color filter
   if (colors && colors.length > 0) {
-    filtered = filtered.filter(p => 
+    filtered = filtered.filter(p =>
       p.variants.some(v => colors.includes(v.color) && v.stockQuantity > 0)
     );
   }
-  
+
   // Apply sorting
   switch (sortBy) {
     case 'price-asc':
@@ -127,13 +127,13 @@ export function getMockProducts(options: {
       filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       break;
   }
-  
+
   // Paginate
   const total = filtered.length;
   const totalPages = Math.ceil(total / limit);
   const start = (page - 1) * limit;
   const data = filtered.slice(start, start + limit);
-  
+
   return {
     data,
     pagination: {

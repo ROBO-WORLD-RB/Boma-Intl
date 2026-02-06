@@ -2,7 +2,7 @@ export default function StructuredData() {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "BOMA 2025",
+    name: "BOMA 2026",
     url: "https://bomaintl.shop",
     logo: "https://bomaintl.shop/icon.png",
     description: "Premium African streetwear collection from Accra to the world",

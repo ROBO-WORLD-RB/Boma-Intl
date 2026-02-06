@@ -133,7 +133,7 @@ export function Footer() {
             {/* Logo/Brand */}
             <div className="flex items-center">
               <span className="text-2xl font-bold text-white font-[family-name:var(--font-oswald)]">
-                BOMA 2025
+                BOMA 2026
               </span>
             </div>
 
@@ -155,7 +155,7 @@ export function Footer() {
 
             {/* Copyright */}
             <p className="text-gray-500 text-sm">
-              © {currentYear} BOMA 2025. All rights reserved.
+              © {currentYear} BOMA 2026. All rights reserved.
             </p>
           </div>
         </div>

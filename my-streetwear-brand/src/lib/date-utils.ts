@@ -20,19 +20,19 @@ export const MAX_FUTURE_DAYS = 14;
  * Ghana public holidays (month-day format for recurring, full date for specific years)
  * Note: This is a simplified list - in production, this should be fetched from a service
  */
-export const GHANA_PUBLIC_HOLIDAYS_2025: string[] = [
-  '2025-01-01', // New Year's Day
-  '2025-03-06', // Independence Day
-  '2025-04-18', // Good Friday
-  '2025-04-21', // Easter Monday
-  '2025-05-01', // May Day
-  '2025-05-25', // Africa Day
-  '2025-07-01', // Republic Day
-  '2025-08-04', // Founders' Day
-  '2025-09-21', // Kwame Nkrumah Memorial Day
-  '2025-12-01', // Farmers' Day
-  '2025-12-25', // Christmas Day
-  '2025-12-26', // Boxing Day
+export const GHANA_PUBLIC_HOLIDAYS_2026: string[] = [
+  '2026-01-01', // New Year's Day
+  '2026-03-06', // Independence Day
+  '2026-04-03', // Good Friday
+  '2026-04-06', // Easter Monday
+  '2026-05-01', // May Day
+  '2026-05-25', // Africa Day
+  '2026-07-01', // Republic Day
+  '2026-08-04', // Founders' Day
+  '2026-09-21', // Kwame Nkrumah Memorial Day
+  '2026-12-04', // Farmers' Day
+  '2026-12-25', // Christmas Day
+  '2026-12-26', // Boxing Day
 ];
 
 /**
@@ -53,7 +53,7 @@ export function isSunday(date: Date): boolean {
  */
 export function isPublicHoliday(date: Date): boolean {
   const dateString = formatDateISO(date);
-  return GHANA_PUBLIC_HOLIDAYS_2025.includes(dateString);
+  return GHANA_PUBLIC_HOLIDAYS_2026.includes(dateString);
 }
 
 /**
@@ -164,14 +164,14 @@ export function isTooFarInFuture(date: Date, referenceDate: Date = new Date()): 
 export function getMinDeliveryDate(referenceDate: Date = new Date()): Date {
   const currentHour = referenceDate.getHours();
   const daysToAdd = currentHour < CUTOFF_HOUR ? 1 : 2;
-  
+
   let minDate = addDays(startOfDay(referenceDate), daysToAdd);
-  
+
   // Skip blackout dates
   while (isBlackoutDate(minDate)) {
     minDate = addDays(minDate, 1);
   }
-  
+
   return minDate;
 }
 
@@ -234,15 +234,15 @@ export function getValidDeliveryDates(referenceDate: Date = new Date()): Date[] 
   const validDates: Date[] = [];
   const minDate = getMinDeliveryDate(referenceDate);
   const maxDate = getMaxDeliveryDate(referenceDate);
-  
+
   let currentDate = new Date(minDate);
-  
+
   while (currentDate <= maxDate) {
     if (!isBlackoutDate(currentDate)) {
       validDates.push(new Date(currentDate));
     }
     currentDate = addDays(currentDate, 1);
   }
-  
+
   return validDates;
 }

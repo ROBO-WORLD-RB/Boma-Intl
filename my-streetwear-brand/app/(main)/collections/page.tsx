@@ -6,7 +6,7 @@ import Link from "next/link";
 const collections = [
   {
     id: 1,
-    name: "BOMA 2025",
+    name: "BOMA 2026",
     description: "The flagship collection. Bold statements for the culture definers.",
     image: "/lookbook/Konu_pixels - ALL RIGHTS RESERVED-BOMA 2025_1.jpg",
     itemCount: 24,
@@ -87,9 +87,8 @@ export default function CollectionsPage() {
             <motion.div
               key={collection.id}
               variants={itemVariants}
-              className={`grid md:grid-cols-2 gap-8 items-center ${
-                index % 2 === 1 ? "md:flex-row-reverse" : ""
-              }`}
+              className={`grid md:grid-cols-2 gap-8 items-center ${index % 2 === 1 ? "md:flex-row-reverse" : ""
+                }`}
             >
               <div className={`${index % 2 === 1 ? "md:order-2" : ""}`}>
                 <div className="relative overflow-hidden aspect-[4/3] group cursor-pointer">
