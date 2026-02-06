@@ -1,4 +1,4 @@
-# BOMA 2025 Robots.txt
+# BOMA 2026 Robots.txt
 User-agent: *
 Allow: /
 Disallow: /admin
