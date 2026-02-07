@@ -56,6 +56,9 @@ export const metadata: Metadata = {
     alternates: {
         canonical: "https://bomaintl.shop",
     },
+    verification: {
+        google: "OFuZJ4bnFYyaYAsvLH6d01MPqhQj3sOPOBh-5ML55Fk",
+    },
 };
 
 export default function MainLayout({
