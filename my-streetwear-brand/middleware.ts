@@ -18,6 +18,9 @@ const BYPASS_PATHS = [
     "/favicon.ico",
     "/icon.png",
     "/apple-icon.png",
+    "/google41d02b5be12a9236.html",
+    "/robots.txt",
+    "/sitemap.xml",
 ];
 
 export function middleware(request: NextRequest) {
