@@ -149,7 +149,7 @@ export class OrderService {
     type TxVariant = { id: string; stockQuantity: number; size: string; color: string; priceOverride: Decimal | null; product: { basePrice: Decimal; isActive: boolean; title: string } };
     
     // Execute everything in a transaction
-    const result = await prisma.$transaction(async (tx: typeof prisma) => {
+    const result = await prisma.$transaction(async (tx) => {
       // 1. Fetch all variants with their products (for pricing)
       const variantIds = items.map((item) => item.variantId);
       const variants = await tx.productVariant.findMany({

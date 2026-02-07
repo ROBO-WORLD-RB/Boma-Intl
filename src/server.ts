@@ -5,8 +5,12 @@ import prisma from './utils/prisma';
 const startServer = async () => {
   try {
     // Test database connection
-    await prisma.$connect();
-    console.log('✅ Database connected');
+    try {
+      await prisma.$connect();
+      console.log('✅ Database connected');
+    } catch (dbError) {
+      console.warn('⚠️ Database connection failed (running in offline mode):', dbError);
+    }
 
     app.listen(config.port, () => {
       console.log(`🚀 Server running on port ${config.port}`);
