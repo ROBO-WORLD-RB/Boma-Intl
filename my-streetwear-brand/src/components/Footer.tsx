@@ -13,11 +13,13 @@ const footerLinks = {
     { label: 'Contact Us', href: '/contact' },
     { label: 'Shipping Info', href: '/shipping' },
     { label: 'Returns', href: '/returns' },
+    { label: 'Terms & Conditions', href: '/terms' },
     { label: 'FAQ', href: '/faq' },
   ],
   company: [
     { label: 'About Us', href: '/about' },
     { label: 'Our Story', href: '/about#story' },
+    { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Careers', href: '/careers' },
   ],
 };

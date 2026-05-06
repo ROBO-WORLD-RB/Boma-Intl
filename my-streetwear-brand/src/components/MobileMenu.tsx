@@ -14,6 +14,8 @@ const navLinks = [
   { href: '/shop', label: 'Shop' },
   { href: '/collections', label: 'Collections' },
   { href: '/about', label: 'About' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
 ];
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {

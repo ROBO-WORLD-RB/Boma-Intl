@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server";
 // ============================================
 // Set to 'true' to enable maintenance mode
 // Set to 'false' to disable and restore normal site access
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 // ============================================
 
 // Paths that should bypass maintenance mode

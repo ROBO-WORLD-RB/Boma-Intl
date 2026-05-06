@@ -81,6 +81,18 @@ export default function Navbar() {
             >
               About
             </Link>
+            <Link
+              href="/privacy"
+              className="text-white text-sm uppercase tracking-widest hover:opacity-70 transition-opacity"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="text-white text-sm uppercase tracking-widest hover:opacity-70 transition-opacity"
+            >
+              Terms
+            </Link>
           </div>
 
           {/* Right side icons */}
