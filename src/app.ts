@@ -29,6 +29,17 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Root route welcome message
+app.get('/', (_req, res) => {
+  res.json({
+    success: true,
+    message: 'BOMA API is running',
+    version: 'v1',
+    documentation: '/api/v1',
+    health: '/health'
+  });
+});
+
 // API routes
 app.use('/api/v1', routes);
 
