@@ -35,8 +35,9 @@ export function middleware(request: NextRequest) {
 
         // If not bypassed and not already on maintenance page, redirect
         if (!shouldBypass) {
-            const maintenanceUrl = new URL("/maintenance", request.url);
-            return NextResponse.redirect(maintenanceUrl);
+            const url = request.nextUrl.clone();
+            url.pathname = "/maintenance";
+            return NextResponse.redirect(url);
         }
     }
 
@@ -51,8 +52,7 @@ export const config = {
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
-         * - public folder files
          */
-        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+        "/((?!_next/static|_next/image|favicon.ico).*)",
     ],
 };
