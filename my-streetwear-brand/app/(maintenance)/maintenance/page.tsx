@@ -28,7 +28,7 @@ export default function MaintenancePage() {
                     transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                     className="headline"
                 >
-                    We&apos;re building something powerful
+                    DEPLOYMENT REQUIRED
                 </motion.h1>
 
                 {/* Subtitle */}
@@ -38,7 +38,7 @@ export default function MaintenancePage() {
                     transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                     className="subtitle"
                 >
-                    Our platform is currently under maintenance. We&apos;ll be live soon.
+                    The platform is awaiting final deployment and configuration. All services are currently suspended.
                 </motion.p>
 
                 {/* Pulse loader animation */}
@@ -61,8 +61,8 @@ export default function MaintenancePage() {
                     transition={{ duration: 0.8, delay: 0.8 }}
                     className="status"
                 >
-                    <div className="status-dot" />
-                    <span>Maintenance in progress</span>
+                    <div className="status-dot" style={{ background: '#facc15', boxShadow: '0 0 10px rgba(250, 204, 21, 0.5)' }} />
+                    <span>Awaiting Deployment</span>
                 </motion.div>
             </div>
 
