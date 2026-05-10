@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../config';
 import { ApiError } from '../utils/ApiError';
 import prisma from '../utils/prisma';
+import { auth as firebaseAuth } from '../config/firebase-admin';
 
 export interface JwtPayload {
   userId: string;
@@ -31,16 +30,42 @@ export const verifyToken = async (
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
+    
+    // Verify Firebase Token
+    let decodedToken;
+    try {
+      decodedToken = await firebaseAuth.verifyIdToken(token);
+    } catch (err) {
+      console.error('[AUTH] Firebase Token Verification Failed:', err);
+      throw ApiError.unauthorized('Invalid token');
+    }
 
-    // Verify user still exists
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+    const { email, uid } = decodedToken;
+
+    if (!email) {
+      throw ApiError.unauthorized('Invalid token: email missing');
+    }
+
+    // Find or create user in our database
+    let user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
       select: { id: true, email: true, role: true },
     });
 
+    // Auto-create user if they exist in Firebase but not in our DB
     if (!user) {
-      throw ApiError.unauthorized('User no longer exists');
+      // Check if this should be an admin (e.g., first user or specific email)
+      const isAdminEmail = email === 'admin@boma.com' || email === 'admin@streetwear.com';
+      
+      user = await prisma.user.create({
+        data: {
+          email: email.toLowerCase().trim(),
+          passwordHash: 'FIREBASE_MANAGED', // Password is not stored here
+          role: isAdminEmail ? 'ADMIN' : 'CUSTOMER',
+        },
+        select: { id: true, email: true, role: true },
+      });
+      console.log(`[AUTH] Auto-created user from Firebase: ${email} (Role: ${user.role})`);
     }
 
     req.user = {
@@ -51,11 +76,7 @@ export const verifyToken = async (
 
     next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      next(ApiError.unauthorized('Invalid token'));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };
 

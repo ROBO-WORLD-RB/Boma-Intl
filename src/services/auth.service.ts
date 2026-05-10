@@ -1,53 +1,39 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import prisma from '../utils/prisma';
-import { config } from '../config';
 import { ApiError } from '../utils/ApiError';
-import { JwtPayload } from '../middleware/auth';
-
-const SALT_ROUNDS = 12;
 
 export class AuthService {
-  async register(email: string, password: string) {
+  async register(email: string) {
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+    let user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
     });
 
-    if (existingUser) {
-      throw ApiError.conflict('Email already registered');
+    if (!user) {
+      // Create user (Firebase handles the actual registration)
+      const isAdminEmail = normalizedEmail === 'admin@boma.com' || normalizedEmail === 'admin@streetwear.com';
+      
+      user = await prisma.user.create({
+        data: {
+          email: normalizedEmail,
+          passwordHash: 'FIREBASE_MANAGED',
+          role: isAdminEmail ? 'ADMIN' : 'CUSTOMER',
+        },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          createdAt: true,
+        },
+      });
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        email: email.toLowerCase().trim(),
-        passwordHash,
-      },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        createdAt: true,
-      },
-    });
-
-    // Generate token
-    const token = this.generateToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    });
-
-    return { user, token };
+    return { user, token: 'FIREBASE_TOKEN_USED' };
   }
 
-  async login(email: string, password: string) {
+  async login(email: string) {
     const normalizedEmail = email.toLowerCase().trim();
-    console.log(`[AUTH] Login attempt for: ${normalizedEmail}`);
 
     // Find user
     const user = await prisma.user.findUnique({
@@ -55,26 +41,9 @@ export class AuthService {
     });
 
     if (!user) {
-      console.warn(`[AUTH] User not found: ${normalizedEmail}`);
-      throw ApiError.unauthorized('Invalid credentials');
+      // If user logs in with Firebase but doesn't exist in our DB yet
+      return this.register(normalizedEmail);
     }
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
-
-    if (!isValidPassword) {
-      console.warn(`[AUTH] Invalid password for: ${normalizedEmail}`);
-      throw ApiError.unauthorized('Invalid credentials');
-    }
-
-    console.log(`[AUTH] Successful login for: ${normalizedEmail} (Role: ${user.role})`);
-
-    // Generate token
-    const token = this.generateToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    });
 
     return {
       user: {
@@ -82,14 +51,8 @@ export class AuthService {
         email: user.email,
         role: user.role,
       },
-      token,
+      token: 'FIREBASE_TOKEN_USED',
     };
-  }
-
-  private generateToken(payload: JwtPayload): string {
-    return jwt.sign(payload, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn as string,
-    } as jwt.SignOptions);
   }
 }
 

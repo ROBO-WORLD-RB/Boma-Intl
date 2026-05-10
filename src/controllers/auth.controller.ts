@@ -3,8 +3,8 @@ import { authService } from '../services/auth.service';
 import { asyncHandler } from '../utils/asyncHandler';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  const result = await authService.register(email, password);
+  const { email } = req.body;
+  const result = await authService.register(email);
 
   res.status(201).json({
     success: true,
@@ -14,8 +14,8 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  const result = await authService.login(email, password);
+  const { email } = req.body;
+  const result = await authService.login(email);
 
   res.json({
     success: true,
