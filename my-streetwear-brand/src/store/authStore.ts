@@ -47,17 +47,18 @@ export const useAuthStore = create<AuthStore>()(
 
         onAuthStateChanged(auth, async (firebaseUser) => {
           if (firebaseUser) {
-            const token = await getIdToken(firebaseUser);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('auth-token', token);
-            }
-            set({ token });
-            // Fetch profile from our backend to get role and other info
             try {
+              const token = await getIdToken(firebaseUser);
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('auth-token', token);
+              }
+              set({ token });
+              // Simply fetch profile. Backend will auto-sync user based on Firebase token.
               const response = await api.auth.me();
               set({ user: response.data, isInitialized: true });
             } catch (err) {
-              set({ isInitialized: true });
+              console.error('[AUTH] Initialization error:', err);
+              set({ isInitialized: true, token: null, user: null });
             }
           } else {
             if (typeof window !== 'undefined') {
@@ -71,7 +72,7 @@ export const useAuthStore = create<AuthStore>()(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          // 1. Sign in with Firebase
+          // 1. Sign in with Firebase (This is the primary auth)
           const userCredential = await signInWithEmailAndPassword(
             auth, 
             credentials.email, 
@@ -85,19 +86,21 @@ export const useAuthStore = create<AuthStore>()(
             localStorage.setItem('auth-token', token);
           }
           
-          // 3. Sync with backend to get full user profile (and create user if not exists)
-          const response = await api.auth.login({
-            email: credentials.email,
-            password: 'FIREBASE_MANAGED_AUTH' // Backend will verify via Firebase token
-          });
+          set({ token });
+
+          // 3. Get profile from backend (Backend verifies token and syncs DB)
+          const response = await api.auth.me();
           
-          set({ user: response.data.user, token, isLoading: false });
+          set({ user: response.data, isLoading: false });
         } catch (error: any) {
+          console.error('[AUTH] Login error:', error);
           let message = 'Login failed';
           if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
             message = 'Invalid email or password';
           } else if (error.code === 'auth/too-many-requests') {
             message = 'Too many failed attempts. Please try again later.';
+          } else if (error.message) {
+            message = error.message;
           }
           
           set({ 
@@ -125,17 +128,19 @@ export const useAuthStore = create<AuthStore>()(
             localStorage.setItem('auth-token', token);
           }
 
-          // 3. Sync with backend
-          const response = await api.auth.register({
-            ...data,
-            password: 'FIREBASE_MANAGED_AUTH'
-          });
+          set({ token });
 
-          set({ user: response.data.user, token, isLoading: false });
+          // 3. Sync with backend
+          const response = await api.auth.me();
+
+          set({ user: response.data, isLoading: false });
         } catch (error: any) {
+          console.error('[AUTH] Registration error:', error);
           let message = 'Registration failed';
           if (error.code === 'auth/email-already-in-use') {
             message = 'Email already in use';
+          } else if (error.message) {
+            message = error.message;
           }
           
           set({ 
@@ -147,7 +152,11 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       logout: async () => {
-        await firebaseSignOut(auth);
+        try {
+          await firebaseSignOut(auth);
+        } catch (err) {
+          console.error('[AUTH] Logout error:', err);
+        }
         if (typeof window !== 'undefined') {
           localStorage.removeItem('auth-token');
         }

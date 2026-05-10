@@ -3,7 +3,8 @@ import { authService } from '../services/auth.service';
 import { asyncHandler } from '../utils/asyncHandler';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { email } = req.body;
+  // Use the email verified by our verifyToken middleware
+  const email = req.user!.email;
   const result = await authService.register(email);
 
   res.status(201).json({
@@ -14,7 +15,8 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
-  const { email } = req.body;
+  // Use the email verified by our verifyToken middleware
+  const email = req.user!.email;
   const result = await authService.login(email);
 
   res.json({
