@@ -147,6 +147,15 @@ export default function Navbar() {
                     >
                       My Account
                     </Link>
+                    {user.role === 'ADMIN' && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block px-4 py-2 text-yellow-500 font-bold hover:bg-neutral-800 transition-colors border-t border-neutral-800"
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         logout();

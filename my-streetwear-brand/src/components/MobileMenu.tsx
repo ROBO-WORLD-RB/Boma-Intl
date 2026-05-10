@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Drawer } from '@/components/ui/Drawer';
 import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ const navLinks = [
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const { toggleCart, itemCount } = useCartStore();
+  const { user } = useAuth();
   const count = isHydrated ? itemCount() : 0;
 
   useEffect(() => {
@@ -96,6 +98,19 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             </svg>
             <span className="text-lg font-medium">Account</span>
           </Link>
+
+          {isHydrated && user?.role === 'ADMIN' && (
+            <Link
+              href="/admin"
+              onClick={onClose}
+              className="flex items-center gap-3 text-yellow-500 hover:text-yellow-400 transition-colors min-h-[44px]"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span className="text-lg font-bold">Admin Dashboard</span>
+            </Link>
+          )}
         </div>
       </div>
     </Drawer>

@@ -1,17 +1,29 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import Link from 'next/link';
-import { useRedirectIfAuthenticated } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
 export default function LoginPage() {
-  const { login, isLoading, error, clearError } = useRedirectIfAuthenticated('/account');
+  const router = useRouter();
+  const { login, isLoading, error, clearError, user, isAuthenticated } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formErrors, setFormErrors] = useState<{ email?: string; password?: string }>({});
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (user?.role === 'ADMIN') {
+        router.push('/admin');
+      } else {
+        router.push('/account');
+      }
+    }
+  }, [isAuthenticated, user, router]);
 
   const validateForm = () => {
     const errors: { email?: string; password?: string } = {};
