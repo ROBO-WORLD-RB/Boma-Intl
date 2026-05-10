@@ -1,7 +1,9 @@
 // Product Types
+export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
+
 export interface ProductVariant {
   id: string;
-  size: string;
+  size: Size;
   color: string;
   stockQuantity: number;
   priceOverride?: number;

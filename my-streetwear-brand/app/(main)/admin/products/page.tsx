@@ -151,9 +151,9 @@ export default function AdminProductsPage() {
 
     try {
       if (editingProduct) {
-        await api.products.update(editingProduct.id, formData);
+        await api.products.update(editingProduct.id, formData as any);
       } else {
-        await api.products.create(formData);
+        await api.products.create(formData as any);
       }
       setIsModalOpen(false);
       await fetchProducts();
@@ -232,7 +232,6 @@ export default function AdminProductsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingProduct ? 'Edit Item' : 'Add New Item'}
-        size="xl"
       >
         <form onSubmit={handleSubmit} className="space-y-8 max-h-[70vh] overflow-y-auto px-1">
           {/* Basic Info */}
@@ -371,7 +370,7 @@ export default function AdminProductsPage() {
                   <div className="flex items-end">
                     <Button 
                       type="button" 
-                      variant="ghost" 
+                      variant="outline" 
                       className="text-red-500 hover:text-red-400 hover:bg-red-500/10 w-full"
                       onClick={() => removeVariant(index)}
                       disabled={formData.variants.length === 1}
