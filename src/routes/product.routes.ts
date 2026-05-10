@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { getProducts, getProductBySlug } from '../controllers/product.controller';
+import { getProducts, getProductBySlug, createProduct } from '../controllers/product.controller';
+import { updateProduct, deleteProduct } from '../controllers/admin.controller';
 import { getProductReviews, createReview, updateReview, deleteReview } from '../controllers/review.controller';
-import { verifyToken } from '../middleware/auth';
+import { verifyToken, requireAdmin } from '../middleware/auth';
 import { validate } from '../middleware/validate';
+import { createProductSchema, updateProductSchema } from '../utils/validators';
 import { z } from 'zod';
 
 const router = Router();
@@ -25,6 +27,11 @@ const updateReviewSchema = z.object({
 // Product routes
 router.get('/', getProducts);
 router.get('/:slug', getProductBySlug);
+
+// Admin product management (protected)
+router.post('/', verifyToken, requireAdmin, validate(createProductSchema), createProduct);
+router.put('/:id', verifyToken, requireAdmin, validate(updateProductSchema), updateProduct);
+router.delete('/:id', verifyToken, requireAdmin, deleteProduct);
 
 // Review routes (nested under products)
 router.get('/:slug/reviews', getProductReviews);
