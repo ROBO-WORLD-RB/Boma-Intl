@@ -7,6 +7,8 @@ export function proxy(req: NextRequest) {
   // 1. Bypass essential routes and assets
   if (
     pathname === '/maintenance' ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/admin') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
     pathname.includes('.')
