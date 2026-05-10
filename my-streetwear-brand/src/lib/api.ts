@@ -97,6 +97,15 @@ async function fetchApi<T>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: 'An error occurred' }));
+    
+    // Log auth failures specifically for easier debugging
+    if (endpoint.includes('/auth/login') || response.status === 401) {
+      console.error(`[API] Auth Failure: ${response.status} ${response.statusText}`, {
+        url: `${API_BASE}${endpoint}`,
+        message: error.message,
+      });
+    }
+    
     throw new Error(error.message || `HTTP error! status: ${response.status}`);
   }
 

@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../utils/prisma';
 import { config } from '../config';
@@ -11,7 +11,7 @@ export class AuthService {
   async register(email: string, password: string) {
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: email.toLowerCase().trim() },
     });
 
     if (existingUser) {
@@ -24,7 +24,7 @@ export class AuthService {
     // Create user
     const user = await prisma.user.create({
       data: {
-        email,
+        email: email.toLowerCase().trim(),
         passwordHash,
       },
       select: {
@@ -46,12 +46,16 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
+    const normalizedEmail = email.toLowerCase().trim();
+    console.log(`[AUTH] Login attempt for: ${normalizedEmail}`);
+
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {
+      console.warn(`[AUTH] User not found: ${normalizedEmail}`);
       throw ApiError.unauthorized('Invalid credentials');
     }
 
@@ -59,8 +63,11 @@ export class AuthService {
     const isValidPassword = await bcrypt.compare(password, user.passwordHash);
 
     if (!isValidPassword) {
+      console.warn(`[AUTH] Invalid password for: ${normalizedEmail}`);
       throw ApiError.unauthorized('Invalid credentials');
     }
+
+    console.log(`[AUTH] Successful login for: ${normalizedEmail} (Role: ${user.role})`);
 
     // Generate token
     const token = this.generateToken({
