@@ -33,8 +33,8 @@ app.get('/health', (_req, res) => {
 app.get('/', (_req, res) => {
   res.json({
     success: true,
-    message: 'BOMA API is running',
-    version: 'v1',
+    message: 'BOMA API is running (Firebase Auth)',
+    version: 'v1.1-firebase',
     documentation: '/api/v1',
     health: '/health'
   });

@@ -3,12 +3,17 @@ import * as admin from 'firebase-admin';
 const projectId = "boma-shop";
 
 if (!admin.apps.length) {
-  admin.initializeApp({
-    projectId: projectId,
-    // Note: In production on Vercel, you should ideally set the 
-    // FIREBASE_SERVICE_ACCOUNT_KEY environment variable.
-    // For now, we'll initialize with just the project ID for public token verification.
-  });
+  console.log(`[FIREBASE] Initializing Admin SDK for project: ${projectId}`);
+  try {
+    // In Vercel, it will try to find credentials in environment variables
+    // (GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_CONFIG)
+    admin.initializeApp({
+      projectId: projectId,
+    });
+    console.log('[FIREBASE] Admin SDK initialized successfully');
+  } catch (err: any) {
+    console.error('[FIREBASE] Initialization Error:', err.message);
+  }
 }
 
 export const auth = admin.auth();
