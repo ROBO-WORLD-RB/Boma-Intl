@@ -20,16 +20,17 @@ export class AuthService {
           passwordHash: 'FIREBASE_MANAGED',
           role: isAdminEmail ? 'ADMIN' : 'CUSTOMER',
         },
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          createdAt: true,
-        },
       });
     }
 
-    return { user, token: 'FIREBASE_TOKEN_USED' };
+    return { 
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      }, 
+      token: 'FIREBASE_TOKEN_USED' 
+    };
   }
 
   async login(email: string) {

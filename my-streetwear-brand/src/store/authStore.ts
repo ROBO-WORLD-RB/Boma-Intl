@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User } from '@/types';
 import { api, LoginCredentials, RegisterData } from '@/lib/api';
-import { auth } from './firebase';
+import { auth } from '@/lib/firebase';
 import { 
   signInWithEmailAndPassword, 
   signOut as firebaseSignOut,
