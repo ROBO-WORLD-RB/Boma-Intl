@@ -77,6 +77,18 @@ router.get('/inventory/alerts', requireOwnerOrDeveloper, asyncHandler(async (req
   });
 }));
 
+router.get('/inventory/low-stock', requireOwnerOrDeveloper, asyncHandler(async (req: Request, res: Response) => {
+  const { threshold } = req.query;
+  const result = await inventoryService.getLowStockAlerts(
+    threshold ? parseInt(threshold as string, 10) : undefined
+  );
+
+  res.json({
+    success: true,
+    data: result,
+  });
+}));
+
 router.get('/inventory/summary', requireOwnerOrDeveloper, asyncHandler(async (_req: Request, res: Response) => {
   const result = await inventoryService.getInventorySummary();
 
