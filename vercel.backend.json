@@ -5,11 +5,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "functions": {
-    "src/server.ts": {
-      "runtime": "@vercel/node"
-    }
-  },
   "routes": [
     {
       "src": "/(.*)",
