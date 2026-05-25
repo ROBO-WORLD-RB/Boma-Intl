@@ -49,7 +49,10 @@ export default function AdminDashboardPage() {
         }
 
         if (inventoryRes.status === 'fulfilled') {
-          setLowStockItems(inventoryRes.value.data);
+          const itemList = Array.isArray(inventoryRes.value.data) 
+            ? inventoryRes.value.data 
+            : (inventoryRes.value.data as any)?.lowStockItems || [];
+          setLowStockItems(itemList);
         }
       } catch (err) {
         setError('Failed to load dashboard data');
