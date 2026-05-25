@@ -42,7 +42,10 @@ export default function AdminDashboardPage() {
         }
 
         if (ordersRes.status === 'fulfilled') {
-          setRecentOrders(ordersRes.value.data);
+          const orderList = Array.isArray(ordersRes.value.data) 
+            ? ordersRes.value.data 
+            : (ordersRes.value.data as any)?.orders || [];
+          setRecentOrders(orderList);
         }
 
         if (inventoryRes.status === 'fulfilled') {
@@ -68,7 +71,10 @@ export default function AdminDashboardPage() {
       await api.orders.updateStatus(orderId, status);
       // Refresh orders
       const ordersRes = await api.orders.list(1, 10);
-      setRecentOrders(ordersRes.data);
+      const orderList = Array.isArray(ordersRes.data) 
+        ? ordersRes.data 
+        : (ordersRes.data as any)?.orders || [];
+      setRecentOrders(orderList);
     } catch (err) {
       console.error('Failed to update order status:', err);
     }
