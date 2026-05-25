@@ -13,7 +13,7 @@ import {
   flagReview,
   deleteReviewAdmin,
 } from '../controllers/admin.controller';
-import { verifyToken, requireAdmin } from '../middleware/auth';
+import { verifyToken, requireOwner, requireDeveloper, requireOwnerOrDeveloper } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 import { createProductSchema, updateProductSchema, updateOrderStatusSchema } from '../utils/validators';
 import { analyticsService } from '../services/analytics.service';
@@ -22,28 +22,28 @@ import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
 
-// All admin routes require authentication and admin role
-router.use(verifyToken, requireAdmin);
+// All admin routes require authentication
+router.use(verifyToken);
 
 // ============ PRODUCT MANAGEMENT ============
-router.post('/products', validate(createProductSchema), createProduct);
-router.patch('/products/:id', validate(updateProductSchema), updateProduct);
-router.delete('/products/:id', deleteProduct);
-router.patch('/products/:id/threshold', updateProductThreshold);
-router.patch('/variants/:variantId/stock', updateVariantStock);
+router.post('/products', requireOwner, validate(createProductSchema), createProduct);
+router.patch('/products/:id', requireOwner, validate(updateProductSchema), updateProduct);
+router.delete('/products/:id', requireOwner, deleteProduct);
+router.patch('/products/:id/threshold', requireOwner, updateProductThreshold);
+router.patch('/variants/:variantId/stock', requireOwner, updateVariantStock);
 
 // ============ ORDER MANAGEMENT ============
-router.get('/orders', getAllOrders);
-router.get('/orders/:id', getOrderByIdAdmin);
-router.patch('/orders/:id/status', validate(updateOrderStatusSchema), updateOrderStatus);
+router.get('/orders', requireOwner, getAllOrders);
+router.get('/orders/:id', requireOwner, getOrderByIdAdmin);
+router.patch('/orders/:id/status', requireOwner, validate(updateOrderStatusSchema), updateOrderStatus);
 
 // ============ REVIEW MODERATION ============
-router.get('/reviews', getAllReviews);
-router.patch('/reviews/:reviewId/flag', flagReview);
-router.delete('/reviews/:reviewId', deleteReviewAdmin);
+router.get('/reviews', requireOwnerOrDeveloper, getAllReviews);
+router.patch('/reviews/:reviewId/flag', requireOwnerOrDeveloper, flagReview);
+router.delete('/reviews/:reviewId', requireOwnerOrDeveloper, deleteReviewAdmin);
 
 // ============ ANALYTICS ============
-router.get('/analytics', asyncHandler(async (req: Request, res: Response) => {
+router.get('/analytics', requireOwnerOrDeveloper, asyncHandler(async (req: Request, res: Response) => {
   const { days } = req.query;
   const result = await analyticsService.getSalesAnalytics(
     days ? parseInt(days as string, 10) : undefined
@@ -55,7 +55,7 @@ router.get('/analytics', asyncHandler(async (req: Request, res: Response) => {
   });
 }));
 
-router.get('/analytics/quick', asyncHandler(async (_req: Request, res: Response) => {
+router.get('/analytics/quick', requireOwnerOrDeveloper, asyncHandler(async (_req: Request, res: Response) => {
   const result = await analyticsService.getQuickMetrics();
 
   res.json({
@@ -65,7 +65,7 @@ router.get('/analytics/quick', asyncHandler(async (_req: Request, res: Response)
 }));
 
 // ============ INVENTORY ============
-router.get('/inventory/alerts', asyncHandler(async (req: Request, res: Response) => {
+router.get('/inventory/alerts', requireOwnerOrDeveloper, asyncHandler(async (req: Request, res: Response) => {
   const { threshold } = req.query;
   const result = await inventoryService.getLowStockAlerts(
     threshold ? parseInt(threshold as string, 10) : undefined
@@ -77,7 +77,7 @@ router.get('/inventory/alerts', asyncHandler(async (req: Request, res: Response)
   });
 }));
 
-router.get('/inventory/summary', asyncHandler(async (_req: Request, res: Response) => {
+router.get('/inventory/summary', requireOwnerOrDeveloper, asyncHandler(async (_req: Request, res: Response) => {
   const result = await inventoryService.getInventorySummary();
 
   res.json({

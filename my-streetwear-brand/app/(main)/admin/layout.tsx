@@ -22,7 +22,7 @@ export default function AdminLayout({
     if (mounted && !isLoading) {
       if (!isAuthenticated) {
         router.push('/auth/login?redirect=/admin');
-      } else if (user?.role !== 'ADMIN') {
+      } else if (user?.role !== 'OWNER') {
         router.push('/');
       }
     }
@@ -36,12 +36,12 @@ export default function AdminLayout({
     );
   }
 
-  if (!isAuthenticated || user?.role !== 'ADMIN') {
+  if (!isAuthenticated || user?.role !== 'OWNER') {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-gray-400 mb-6">You need admin privileges to access this page.</p>
+          <p className="text-gray-400 mb-6">You need owner privileges to access this page.</p>
           <Link href="/" className="text-blue-400 hover:text-blue-300">
             Return to Home
           </Link>

@@ -65,9 +65,12 @@ async function fetchApi<T>(
   endpoint: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  const token = typeof window !== 'undefined' 
+  let token = typeof window !== 'undefined' 
     ? localStorage.getItem('auth-token') 
     : null;
+
+  // If using Firebase, we could also get it directly from auth object for reliability
+  // But localStorage is faster for SSR/hydration if managed correctly.
 
   const { cacheStrategy = 'default', ...fetchOptions } = options;
 

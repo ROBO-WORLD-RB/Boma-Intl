@@ -99,7 +99,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             <span className="text-lg font-medium">Account</span>
           </Link>
 
-          {isHydrated && user?.role === 'ADMIN' && (
+          {isHydrated && user?.role === 'OWNER' && (
             <Link
               href="/admin"
               onClick={onClose}

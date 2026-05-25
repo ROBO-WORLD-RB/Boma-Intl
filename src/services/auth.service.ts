@@ -12,13 +12,18 @@ export class AuthService {
 
     if (!user) {
       // Create user (Firebase handles the actual registration)
-      const isAdminEmail = normalizedEmail === 'admin@boma.com' || normalizedEmail === 'admin@streetwear.com';
+      const isOwnerEmail = normalizedEmail === 'owner@boma.com' || normalizedEmail === 'admin@boma.com';
+      const isDevEmail = normalizedEmail === 'dev@boma.com' || normalizedEmail === 'admin@streetwear.com';
       
+      let assignedRole: 'OWNER' | 'DEVELOPER' | 'CUSTOMER' = 'CUSTOMER';
+      if (isOwnerEmail) assignedRole = 'OWNER';
+      else if (isDevEmail) assignedRole = 'DEVELOPER';
+
       user = await prisma.user.create({
         data: {
           email: normalizedEmail,
           passwordHash: 'FIREBASE_MANAGED',
-          role: isAdminEmail ? 'ADMIN' : 'CUSTOMER',
+          role: assignedRole,
         },
       });
     }

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getProducts, getProductBySlug, createProduct } from '../controllers/product.controller';
 import { updateProduct, deleteProduct } from '../controllers/admin.controller';
 import { getProductReviews, createReview, updateReview, deleteReview } from '../controllers/review.controller';
-import { verifyToken, requireAdmin } from '../middleware/auth';
+import { verifyToken, requireOwner } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 import { createProductSchema, updateProductSchema } from '../utils/validators';
 import { z } from 'zod';
@@ -29,9 +29,9 @@ router.get('/', getProducts);
 router.get('/:slug', getProductBySlug);
 
 // Admin product management (protected)
-router.post('/', verifyToken, requireAdmin, validate(createProductSchema), createProduct);
-router.put('/:id', verifyToken, requireAdmin, validate(updateProductSchema), updateProduct);
-router.delete('/:id', verifyToken, requireAdmin, deleteProduct);
+router.post('/', verifyToken, requireOwner, validate(createProductSchema), createProduct);
+router.put('/:id', verifyToken, requireOwner, validate(updateProductSchema), updateProduct);
+router.delete('/:id', verifyToken, requireOwner, deleteProduct);
 
 // Review routes (nested under products)
 router.get('/:slug/reviews', getProductReviews);

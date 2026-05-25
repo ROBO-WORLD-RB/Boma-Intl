@@ -17,7 +17,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (user?.role === 'ADMIN') {
+      if (user?.role === 'OWNER') {
         router.push('/admin');
       } else {
         router.push('/account');

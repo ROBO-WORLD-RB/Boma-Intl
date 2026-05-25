@@ -45,9 +45,7 @@ const initialFormData: ProductFormData = {
   variants: [
     { size: 'M' as Size, color: 'Black', stockQuantity: 10, sku: '' }
   ],
-  images: [
-    { url: '', isMain: true, altText: '' }
-  ],
+  images: [],
 };
 
 export default function AdminProductsPage() {
@@ -66,7 +64,10 @@ export default function AdminProductsPage() {
     setIsLoading(true);
     try {
       const response = await api.products.list({ limit: 100 });
-      setProducts(response.data);
+      const productList = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data as any)?.products || [];
+      setProducts(productList);
     } catch (err) {
       console.error('Failed to fetch products:', err);
       setError('Failed to load products');
@@ -179,11 +180,66 @@ export default function AdminProductsPage() {
     }));
   };
 
-  const addImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, { url: '', isMain: false, altText: '' }]
-    }));
+  const compressImage = (file: File, maxWidth = 1000, quality = 0.7): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(event.target?.result as string);
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl);
+        };
+        img.onerror = () => {
+          resolve(event.target?.result as string);
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = () => {
+        resolve('');
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    for (const file of Array.from(files)) {
+      try {
+        const compressedBase64 = await compressImage(file);
+        if (!compressedBase64) continue;
+        
+        setFormData((prev) => {
+          const isMain = prev.images.length === 0;
+          return {
+            ...prev,
+            images: [...prev.images, { url: compressedBase64, isMain, altText: file.name }]
+          };
+        });
+      } catch (err) {
+        console.error('Failed to compress image:', err);
+      }
+    }
   };
 
   const removeImage = (index: number) => {
@@ -252,12 +308,7 @@ export default function AdminProductsPage() {
                 placeholder="e.g. BOMA Signature Hoodie"
                 required
               />
-              <Input
-                label="Slug (URL Path)"
-                value={formData.slug}
-                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                required
-              />
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
                 <textarea
@@ -387,54 +438,64 @@ export default function AdminProductsPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-gray-800 pb-2">
               <h3 className="text-lg font-semibold text-white">Product Images</h3>
-              <Button type="button" variant="outline" size="sm" onClick={addImage}>
-                <ImageIcon className="w-4 h-4 mr-1" /> Add Image URL
-              </Button>
+              <label className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-700 bg-gray-900 rounded-lg text-sm font-medium text-white hover:bg-gray-800 transition-colors">
+                <ImageIcon className="w-4 h-4 mr-2" /> Upload Images
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {formData.images.map((image, index) => (
-                <div key={index} className="p-4 bg-gray-900/50 rounded-lg border border-gray-800 space-y-3 relative">
-                  <Input
-                    label="Image URL"
-                    value={image.url}
-                    onChange={(e) => {
-                      const newImages = [...formData.images];
-                      newImages[index].url = e.target.value;
-                      setFormData(prev => ({ ...prev, images: newImages }));
-                    }}
-                    placeholder="https://..."
-                    required
-                  />
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name="main-image"
-                        id={`main-${index}`}
-                        checked={image.isMain}
-                        onChange={() => {
-                          const newImages = formData.images.map((img, i) => ({
-                            ...img,
-                            isMain: i === index
-                          }));
-                          setFormData(prev => ({ ...prev, images: newImages }));
-                        }}
-                        className="w-4 h-4"
+            
+            {formData.images.length === 0 ? (
+              <div className="border-2 border-dashed border-gray-800 rounded-lg p-8 text-center text-gray-500">
+                <p>No images uploaded yet.</p>
+                <p className="text-xs text-gray-600 mt-1">Click the button above to upload images from your local drive.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {formData.images.map((image, index) => (
+                  <div key={index} className="p-3 bg-gray-900/50 rounded-lg border border-gray-800 space-y-3 relative group">
+                    <div className="h-40 w-full overflow-hidden rounded bg-black flex items-center justify-center relative">
+                      <img
+                        src={image.url}
+                        alt={image.altText || 'Product image'}
+                        className="h-full w-full object-cover"
                       />
-                      <label htmlFor={`main-${index}`} className="text-xs text-gray-400">Set as Main Image</label>
                     </div>
-                    <button 
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="text-red-500 hover:text-red-400 text-xs"
-                      disabled={formData.images.length === 1}
-                    >
-                      Remove
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="main-image"
+                          id={`main-${index}`}
+                          checked={image.isMain}
+                          onChange={() => {
+                            const newImages = formData.images.map((img, i) => ({
+                              ...img,
+                              isMain: i === index
+                            }));
+                            setFormData(prev => ({ ...prev, images: newImages }));
+                          }}
+                          className="w-4 h-4 text-white focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                        />
+                        <label htmlFor={`main-${index}`} className="text-xs text-gray-400 cursor-pointer">Main Image</label>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="text-red-500 hover:text-red-400 text-xs font-medium"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-800">

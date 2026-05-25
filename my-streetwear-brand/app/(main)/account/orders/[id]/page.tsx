@@ -39,9 +39,9 @@ function formatDate(dateString: string) {
 }
 
 function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('en-NG', {
+  return new Intl.NumberFormat('en-GH', {
     style: 'currency',
-    currency: 'NGN',
+    currency: 'GHS',
   }).format(amount);
 }
 

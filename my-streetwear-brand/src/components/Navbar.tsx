@@ -122,53 +122,62 @@ export default function Navbar() {
             </Link>
 
             {/* User Menu - Desktop only */}
-            {isHydrated && user && (
-              <div className="relative hidden md:block">
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="min-w-[44px] min-h-[44px] flex items-center justify-center text-white hover:opacity-70 transition-opacity"
-                  aria-label="User menu"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </button>
+            {isHydrated && (
+              user ? (
+                <div className="relative hidden md:block">
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="min-w-[44px] min-h-[44px] flex items-center justify-center text-white hover:opacity-70 transition-opacity"
+                    aria-label="User menu"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </button>
 
-                {/* Dropdown Menu */}
-                {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-lg shadow-lg z-50">
-                    <div className="p-4 border-b border-neutral-800">
-                      <p className="text-white text-sm font-medium truncate">{user.email}</p>
-                    </div>
-                    <Link
-                      href="/account"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="block px-4 py-2 text-white hover:bg-neutral-800 transition-colors"
-                    >
-                      My Account
-                    </Link>
-                    {user.role === 'ADMIN' && (
+                  {/* Dropdown Menu */}
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-lg shadow-lg z-50">
+                      <div className="p-4 border-b border-neutral-800">
+                        <p className="text-white text-sm font-medium truncate">{user.email}</p>
+                      </div>
                       <Link
-                        href="/admin"
+                        href="/account"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-yellow-500 font-bold hover:bg-neutral-800 transition-colors border-t border-neutral-800"
+                        className="block px-4 py-2 text-white hover:bg-neutral-800 transition-colors"
                       >
-                        Admin Dashboard
+                        My Account
                       </Link>
-                    )}
-                    <button
-                      onClick={() => {
-                        logout();
-                        setUserMenuOpen(false);
-                        router.push('/');
-                      }}
-                      className="w-full text-left px-4 py-2 text-red-500 hover:bg-neutral-800 transition-colors"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
+                      {user.role === 'OWNER' && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="block px-4 py-2 text-yellow-500 font-bold hover:bg-neutral-800 transition-colors border-t border-neutral-800"
+                        >
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => {
+                          logout();
+                          setUserMenuOpen(false);
+                          router.push('/');
+                        }}
+                        className="w-full text-left px-4 py-2 text-red-500 hover:bg-neutral-800 transition-colors"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="hidden md:flex items-center text-white text-xs uppercase tracking-widest hover:opacity-70 transition-opacity px-3 py-2 border border-white/20 rounded-md"
+                >
+                  Sign In
+                </Link>
+              )
             )}
           </div>
         </div>

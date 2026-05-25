@@ -65,9 +65,9 @@ function MetricCard({ title, value, icon, trend, isLoading }: MetricCardProps) {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-NG', {
+  return new Intl.NumberFormat('en-GH', {
     style: 'currency',
-    currency: 'NGN',
+    currency: 'GHS',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);

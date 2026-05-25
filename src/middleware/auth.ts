@@ -6,7 +6,7 @@ import { auth as firebaseAuth } from '../config/firebase-admin';
 export interface JwtPayload {
   userId: string;
   email: string;
-  role: 'ADMIN' | 'CUSTOMER';
+  role: 'OWNER' | 'DEVELOPER' | 'CUSTOMER';
 }
 
 declare global {
@@ -52,13 +52,18 @@ export const verifyToken = async (
 
     if (!user) {
       console.log(`[AUTH] User ${normalizedEmail} not found in DB, auto-creating...`);
-      const isAdminEmail = normalizedEmail === 'admin@boma.com' || normalizedEmail === 'admin@streetwear.com';
+      const isOwnerEmail = normalizedEmail === 'owner@boma.com' || normalizedEmail === 'admin@boma.com';
+      const isDevEmail = normalizedEmail === 'dev@boma.com' || normalizedEmail === 'admin@streetwear.com';
       
+      let assignedRole: 'OWNER' | 'DEVELOPER' | 'CUSTOMER' = 'CUSTOMER';
+      if (isOwnerEmail) assignedRole = 'OWNER';
+      else if (isDevEmail) assignedRole = 'DEVELOPER';
+
       user = await prisma.user.create({
         data: {
           email: normalizedEmail,
           passwordHash: 'FIREBASE_MANAGED',
-          role: isAdminEmail ? 'ADMIN' : 'CUSTOMER',
+          role: assignedRole,
         },
         select: { id: true, email: true, role: true },
       });
@@ -79,14 +84,38 @@ export const verifyToken = async (
   }
 };
 
-export const requireAdmin = (
+export const requireOwner = (
   req: Request,
   _res: Response,
   next: NextFunction
 ) => {
-  if (req.user?.role !== 'ADMIN') {
-    console.warn(`[AUTH] Access denied: User ${req.user?.email} is not an ADMIN`);
-    return next(ApiError.forbidden('Admin access required'));
+  if (req.user?.role !== 'OWNER') {
+    console.warn(`[AUTH] Access denied: User ${req.user?.email} is not an OWNER`);
+    return next(ApiError.forbidden('Owner access required'));
+  }
+  next();
+};
+
+export const requireDeveloper = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  if (req.user?.role !== 'DEVELOPER') {
+    console.warn(`[AUTH] Access denied: User ${req.user?.email} is not a DEVELOPER`);
+    return next(ApiError.forbidden('Developer access required'));
+  }
+  next();
+};
+
+export const requireOwnerOrDeveloper = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  if (req.user?.role !== 'OWNER' && req.user?.role !== 'DEVELOPER') {
+    console.warn(`[AUTH] Access denied: User ${req.user?.email} is not authorized`);
+    return next(ApiError.forbidden('Elevated access required'));
   }
   next();
 };

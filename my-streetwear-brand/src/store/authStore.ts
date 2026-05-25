@@ -30,7 +30,8 @@ interface AuthStore {
 
   // Computed
   isAuthenticated: () => boolean;
-  isAdmin: () => boolean;
+  isOwner: () => boolean;
+  isDeveloper: () => boolean;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -196,9 +197,14 @@ export const useAuthStore = create<AuthStore>()(
         return !!get().token && !!get().user;
       },
 
-      isAdmin: () => {
+      isOwner: () => {
         const user = get().user;
-        return user?.role === 'ADMIN';
+        return user?.role === 'OWNER';
+      },
+
+      isDeveloper: () => {
+        const user = get().user;
+        return user?.role === 'DEVELOPER';
       },
     }),
     {

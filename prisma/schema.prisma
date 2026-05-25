@@ -8,7 +8,8 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
+  OWNER
+  DEVELOPER
   CUSTOMER
 }
 

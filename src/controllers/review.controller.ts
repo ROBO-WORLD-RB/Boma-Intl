@@ -53,7 +53,7 @@ export const updateReview = asyncHandler(async (req: Request, res: Response) => 
 export const deleteReview = asyncHandler(async (req: Request, res: Response) => {
   const { reviewId } = req.params;
   const userId = req.user!.userId;
-  const isAdmin = req.user!.role === 'ADMIN';
+  const isAdmin = req.user!.role === 'OWNER' || req.user!.role === 'DEVELOPER';
 
   const result = await reviewService.deleteReview(reviewId, userId, isAdmin);
 

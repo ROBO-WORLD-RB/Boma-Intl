@@ -80,7 +80,7 @@ export interface User {
   email: string;
   firstName?: string;
   lastName?: string;
-  role: 'CUSTOMER' | 'ADMIN';
+  role: 'CUSTOMER' | 'OWNER' | 'DEVELOPER';
 }
 
 export interface Address {

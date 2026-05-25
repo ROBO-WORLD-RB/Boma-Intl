@@ -25,7 +25,8 @@ export function useAuth(options: UseAuthOptions = {}) {
     fetchUser,
     clearError,
     isAuthenticated,
-    isAdmin,
+    isOwner,
+    isDeveloper,
   } = useAuthStore();
 
   // Check authentication status on mount
@@ -69,7 +70,8 @@ export function useAuth(options: UseAuthOptions = {}) {
     isLoading,
     error,
     isAuthenticated: isAuthenticated(),
-    isAdmin: isAdmin(),
+    isOwner: isOwner(),
+    isDeveloper: isDeveloper(),
     login,
     register,
     logout,
@@ -87,16 +89,16 @@ export function useRedirectIfAuthenticated(redirectTo = '/account') {
   return useAuth({ redirectTo, redirectIfFound: true });
 }
 
-// Hook for admin-only routes
-export function useRequireAdmin(redirectTo = '/') {
+// Hook for owner-only routes
+export function useRequireOwner(redirectTo = '/') {
   const auth = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!auth.isLoading && auth.isAuthenticated && !auth.isAdmin) {
+    if (!auth.isLoading && auth.isAuthenticated && !auth.isOwner) {
       router.push(redirectTo);
     }
-  }, [auth.isLoading, auth.isAuthenticated, auth.isAdmin, router, redirectTo]);
+  }, [auth.isLoading, auth.isAuthenticated, auth.isOwner, router, redirectTo]);
 
   return auth;
 }
