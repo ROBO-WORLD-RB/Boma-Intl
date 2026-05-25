@@ -7,7 +7,7 @@
   },
   "functions": {
     "src/server.ts": {
-      "runtime": "@vercel/node@3.0.0"
+      "runtime": "@vercel/node"
     }
   },
   "routes": [
